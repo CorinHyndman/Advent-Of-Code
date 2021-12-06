@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using AOC;
@@ -8,14 +9,17 @@ try
 	HelperMethods.Year = 2021;
 	HelperMethods.ExectuingAssembly = Assembly.GetExecutingAssembly();
 
-	DayOne();
-	DayTwo();
+	//DayOne();
+	//DayTwo();
+	//DayThree();
+	//DayFour();
+	DayFive();
 
 	Console.ReadLine();
 
 	void DayOne()
 	{
-		string anwser = null;
+		string anwser = "Day 1: ";
 		int[] input = Array.ConvertAll(
 			array: HelperMethods.GetInput(day: 1).Split(Environment.NewLine),
 			converter: x => int.Parse(x));
@@ -49,6 +53,7 @@ try
 	}
 	void DayTwo()
 	{
+		string answer = "Day 2: ";
 		string[] tmp = HelperMethods.GetInput(day: 2).Split(Environment.NewLine);
 		(string, int)[] input = Enumerable.Range(0, tmp.Length)
 			.Select(i => (tmp[i].Split(' ')[0], int.Parse(tmp[i].Split(' ')[1])))
@@ -56,7 +61,6 @@ try
 
 		int depth = 0;
 		int horizontal = 0;
-		string answer = null;
 		foreach ((string Direction, int Value) in input)
 		{
 			switch (Direction)
@@ -87,6 +91,188 @@ try
 		}
 
 		answer += $"Part 2: {horizontal * depth}";
+	}
+	void DayThree()
+	{
+		string answer = "Day 3: ";
+		string[] input = HelperMethods.GetInput(day: 3).Split(Environment.NewLine);
+
+		int bitCount = 0;
+		string gammaRate = null;
+		string epsilonRate = null;
+		for (int i = 0; i < input[0].Length; i++)
+		{
+			bitCount = 0;
+			for (int j = 0; j < input.Length; j++)
+			{
+				bitCount += input[j][i] is '1'
+					?  1
+					: -1;
+			}
+
+			gammaRate += (bitCount > 0)
+				? '1'
+				: '0';
+			epsilonRate += (bitCount < 0)
+				? '1'
+				: '0';
+		}
+
+		answer += $"Part 1: {Convert.ToInt32(gammaRate, fromBase: 2) * Convert.ToInt32(epsilonRate, fromBase: 2)} ";
+
+		string scrubRating = null;
+		string oxygenGenRating = null;
+
+		scrubRating = NarrowDown(input, condition: (x) => x < 0, searchFor: '0', startPos: 0);
+		oxygenGenRating = NarrowDown(input, condition: (x) => x >= 0, searchFor: '1', startPos: 0);
+
+		answer += $"Part 2: {Convert.ToInt32(scrubRating, fromBase: 2) * Convert.ToInt32(oxygenGenRating, fromBase: 2)}";
+		Console.WriteLine(answer);
+
+		string NarrowDown(string[] array, Func<int,bool> condition,  char searchFor, int startPos)
+		{
+			if (array.Length is 1)
+			{
+				return array[0];
+			}
+
+			bitCount = 0;
+			for (int j = 0; j < array.Length; j++)
+			{
+				bitCount += (array[j][startPos] is '1')
+					?  1
+					: -1;
+			}
+
+			searchFor = condition(bitCount) ? '1' : '0';
+
+			string[] narrowedArray = Array.FindAll(array, s => s[startPos] == searchFor);
+			return NarrowDown(narrowedArray, condition, searchFor, startPos + 1);
+		}
+	}
+	void DayFour()
+	{
+		string answer = "Day 4: ";
+		string[] input = HelperMethods.GetInput(day: 4).Split(Environment.NewLine + Environment.NewLine);
+
+		bool bingo = false;
+		int bingoNumPointer = 0;
+		string[] boards = input[1..];
+		string[] bingoNumbers = input[0].Split(',');
+
+		while (!bingo)
+		{			
+			for (int i = 0; i < boards.Length; i++)
+			{
+				int[,] formattedBoard = FormatBoard(boards[i].Split(Environment.NewLine));
+
+				if (CheckForBingoRow(formattedBoard) || CheckForBingoCol(formattedBoard))
+				{
+					answer += $"Part 1: {SumOfEmptySquares(formattedBoard) * int.Parse(bingoNumbers[bingoNumPointer])} ";
+					bingo = true;
+					break;
+				};
+			}
+
+			bingoNumPointer++;
+		}
+
+		List<(int board, int bingoNumber, int total)> winOrder = new();
+		while (bingoNumPointer < bingoNumbers.Length - 1)
+		{
+			for (int i = 0; i < boards.Length; i++)
+			{
+				int[,] formattedBoard = FormatBoard(boards[i].Split(Environment.NewLine));
+
+				if ((CheckForBingoRow(formattedBoard) || CheckForBingoCol(formattedBoard)) &&
+					!winOrder.Any(x => x.board == i))
+				{
+					winOrder.Add((board: i, bingoNumber: int.Parse(bingoNumbers[bingoNumPointer]), total: SumOfEmptySquares(formattedBoard)));
+				};
+			}
+
+			bingoNumPointer++;
+		}
+
+		answer += $"Part 2: {winOrder.Last().bingoNumber * winOrder.Last().total}";
+
+		int[,] FormatBoard(string[] board)
+		{
+			int[,] result = new int[5,5];
+			for (int i = 0; i < 5; i++)
+			{
+				string[] numbers = board[i].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+				for (int j = 0; j < 5; j++)
+				{
+					result[i, j] = int.Parse(numbers[j]);
+				}
+			}
+			return result;
+		}
+		bool CheckForBingoRow(int[,] board)
+		{
+			int[] calledNumbers = Array.ConvertAll(bingoNumbers[0..(bingoNumPointer + 1)], x => int.Parse(x));
+
+			for (int i = 0; i < 5; i++)
+			{
+				bool isBingo = true;
+				for (int j = 0; j < 5; j++)
+				{
+					if (!calledNumbers.Contains(board[i,j]))
+					{
+						isBingo = false;
+					}
+				}
+				if (isBingo)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		bool CheckForBingoCol(int[,] board)
+		{
+			int[] calledNumbers = Array.ConvertAll(bingoNumbers[0..(bingoNumPointer + 1)], x => int.Parse(x));
+
+			for (int i = 0; i < 5; i++)
+			{
+				bool isBingo = true;
+				for (int j = 0; j < 5; j++)
+				{
+					if (!calledNumbers.Contains(board[j, i]))
+					{
+						isBingo = false;
+					}
+				}
+				if (isBingo)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		int SumOfEmptySquares(int[,] board)
+		{
+			int total = 0;
+			int[] calledNumbers = Array.ConvertAll(bingoNumbers[0..(bingoNumPointer + 1)], x => int.Parse(x));
+
+			for (int i = 0; i < 5; i++)
+			{
+				for (int j = 0; j < 5; j++)
+				{
+					if (!calledNumbers.Contains(board[i, j]))
+					{
+						total += board[i,j];
+					}
+				}
+			}
+			return total;
+		}
+	}
+	void DayFive()
+	{
+		string answer = "Day 5: ";
+		string[] input = HelperMethods.GetInput(day: 5).Split();
 	}
 }
 finally
