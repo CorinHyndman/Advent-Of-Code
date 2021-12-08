@@ -13,10 +13,13 @@ try
 	//DayTwo();
 	//DayThree();
 	//DayFour();
-	DayFive();
+	//DayFive();
+	//DaySix();
+	//DaySeven();
 
 	Console.ReadLine();
 
+	#region Week 1
 	void DayOne()
 	{
 		string anwser = "Day 1: ";
@@ -272,8 +275,183 @@ try
 	void DayFive()
 	{
 		string answer = "Day 5: ";
-		string[] input = HelperMethods.GetInput(day: 5).Split();
+		string[] input = HelperMethods.GetInput(day: 5).Split(Environment.NewLine);
+
+		const int BoardSize = 1000;
+
+		int[,] board = new int[BoardSize, BoardSize];
+
+		foreach (string line in input)
+		{
+			int[] coordinates = Array.ConvertAll(
+				array: line.Split(new char[] { ',', '-', '>' }, StringSplitOptions.RemoveEmptyEntries),
+				converter: x => int.Parse(x));
+
+			const int x1 = 0;
+			const int y1 = 1;
+			const int x2 = 2;
+			const int y2 = 3;
+
+			int Xoffset = Math.Abs(coordinates[x2] - coordinates[x1]);
+			int Yoffset = Math.Abs(coordinates[y2] - coordinates[y1]);
+
+			if (coordinates[x1] == coordinates[x2] ||
+				coordinates[y1] == coordinates[y2])
+			{
+				if (Xoffset is not 0)
+				{
+					for (int i = 0; Math.Abs(i) <= Xoffset;)
+					{
+						board[coordinates[y1], coordinates[x1] + i] += 1;
+						i += coordinates[x1] < coordinates[x2] ? 1 : -1;
+					}
+				}
+				if (Yoffset is not 0)
+				{
+					for (int i = 0; Math.Abs(i) <= Yoffset;)
+					{
+						board[coordinates[y1] + i, coordinates[x1]] += 1;
+						i += coordinates[y1] < coordinates[y2] ? 1 : -1;
+					}
+				}
+			}
+		}
+				
+		answer += $"Part 1: {CalculateOverlappingPipeCount()} ";
+
+		board = new int[BoardSize, BoardSize];
+		foreach (string line in input)
+		{
+			int[] coordinates = Array.ConvertAll(
+				array: line.Split(new char[] { ',', '-', '>' }, StringSplitOptions.RemoveEmptyEntries),
+				converter: x => int.Parse(x));
+
+			const int x1 = 0;
+			const int y1 = 1;
+			const int x2 = 2;
+			const int y2 = 3;
+
+			int Xoffset = Math.Abs(coordinates[x2] - coordinates[x1]);
+			int Yoffset = Math.Abs(coordinates[y2] - coordinates[y1]);
+
+			for (int i = 0, j = 0; Math.Abs(i) <= Xoffset && Math.Abs(j) <= Yoffset;)
+			{
+				board[coordinates[y1] + j, coordinates[x1] + i] += 1;
+
+				if (Xoffset is not 0)
+				{
+					i += coordinates[x1] < coordinates[x2] ? 1 : -1;
+				}
+				if (Yoffset is not 0)
+				{
+					j += coordinates[y1] < coordinates[y2] ? 1 : -1;
+				}
+			}
+		}
+
+		answer += $"Part 2: {CalculateOverlappingPipeCount()}";
+
+		int CalculateOverlappingPipeCount()
+		{
+			int overlappingPipeCount = 0;
+			for (int i = 0; i < BoardSize; i++)
+			{
+				for (int j = 0; j < BoardSize; j++)
+				{
+					if (board[i, j] >= 2)
+					{
+						overlappingPipeCount++;
+					}
+				}
+			}
+			return overlappingPipeCount;
+		}
 	}
+	void DaySix()
+	{
+		string answer = "Day 6: ";
+		int[] input = Array.ConvertAll(
+			array: HelperMethods.GetInput(day: 6).Split(','),
+			converter: x => int.Parse(x));
+		
+		answer += $"Part 1: {SimulateLanternFish(days: 80)} ";
+		answer += $"Part 2: {SimulateLanternFish(days: 256)}";
+
+		long SimulateLanternFish(int days)
+		{
+			long[] fishTimers = new long[9];
+
+			foreach (int i in input)
+			{
+				fishTimers[i]++;
+			}
+
+			for (int i = 0; i < days; i++)
+			{
+				long tmp = fishTimers[0];
+				for (int j = 1; j < fishTimers.Length; j++)
+				{
+					fishTimers[j - 1] = fishTimers[j];
+				}
+				fishTimers[6] += tmp;
+				fishTimers[8] = tmp;
+			}
+
+			long total = 0;
+			foreach (long l in fishTimers)
+			{
+				total += l;
+			}
+			return total;
+		}
+	}
+	void DaySeven()
+	{
+		string answer = "Day 7: ";
+		int[] input = Array.ConvertAll(
+			array: HelperMethods.GetInput(day: 7).Split(','),
+			converter: x => int.Parse(x));
+
+		int lowestFuel = int.MaxValue;
+		for(int i = 0; i < input.Max(); i++)
+		{
+			int totalFuel = 0;
+			foreach (int j in input)
+			{
+				totalFuel += Math.Abs(i - j);
+			}
+			if (totalFuel < lowestFuel)
+			{
+				lowestFuel = totalFuel;
+			}
+		}
+
+		answer += $"Part 1: {lowestFuel} ";
+
+		lowestFuel = int.MaxValue;
+		for (int i = 0; i < input.Max(); i++)
+		{
+			int totalFuel = 0;
+			foreach (int j in input)
+			{
+				int tmp = Math.Abs(i - j);
+
+				for (int k = tmp; k > 0; k--)
+				{
+					totalFuel += k;
+				}
+			}
+			if (totalFuel < lowestFuel)
+			{
+				lowestFuel = totalFuel;
+			}
+		}
+
+		answer += $"Part 2: {lowestFuel} ";
+	}
+	#endregion
+
+
 }
 finally
 {
