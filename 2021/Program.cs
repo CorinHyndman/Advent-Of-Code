@@ -16,6 +16,7 @@ try
 	//DayFive();
 	//DaySix();
 	//DaySeven();
+	DayEight();
 
 	Console.ReadLine();
 
@@ -42,13 +43,13 @@ try
 		int A = input[0] + input[1] + input[2];
 		for (int i = 1; i < input.Length - 2; i++)
 		{
-			int B = input[i] + input[i+1] + input[i+2];
+			int B = input[i] + input[i + 1] + input[i + 2];
 
 			if (A < B)
 			{
 				count++;
 			}
-			
+
 			A = B;
 		}
 
@@ -109,7 +110,7 @@ try
 			for (int j = 0; j < input.Length; j++)
 			{
 				bitCount += input[j][i] is '1'
-					?  1
+					? 1
 					: -1;
 			}
 
@@ -132,7 +133,7 @@ try
 		answer += $"Part 2: {Convert.ToInt32(scrubRating, fromBase: 2) * Convert.ToInt32(oxygenGenRating, fromBase: 2)}";
 		Console.WriteLine(answer);
 
-		string NarrowDown(string[] array, Func<int,bool> condition,  char searchFor, int startPos)
+		string NarrowDown(string[] array, Func<int, bool> condition, char searchFor, int startPos)
 		{
 			if (array.Length is 1)
 			{
@@ -143,7 +144,7 @@ try
 			for (int j = 0; j < array.Length; j++)
 			{
 				bitCount += (array[j][startPos] is '1')
-					?  1
+					? 1
 					: -1;
 			}
 
@@ -164,7 +165,7 @@ try
 		string[] bingoNumbers = input[0].Split(',');
 
 		while (!bingo)
-		{			
+		{
 			for (int i = 0; i < boards.Length; i++)
 			{
 				int[,] formattedBoard = FormatBoard(boards[i].Split(Environment.NewLine));
@@ -201,7 +202,7 @@ try
 
 		int[,] FormatBoard(string[] board)
 		{
-			int[,] result = new int[5,5];
+			int[,] result = new int[5, 5];
 			for (int i = 0; i < 5; i++)
 			{
 				string[] numbers = board[i].Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -221,7 +222,7 @@ try
 				bool isBingo = true;
 				for (int j = 0; j < 5; j++)
 				{
-					if (!calledNumbers.Contains(board[i,j]))
+					if (!calledNumbers.Contains(board[i, j]))
 					{
 						isBingo = false;
 					}
@@ -265,7 +266,7 @@ try
 				{
 					if (!calledNumbers.Contains(board[i, j]))
 					{
-						total += board[i,j];
+						total += board[i, j];
 					}
 				}
 			}
@@ -316,7 +317,7 @@ try
 				}
 			}
 		}
-				
+
 		answer += $"Part 1: {CalculateOverlappingPipeCount()} ";
 
 		board = new int[BoardSize, BoardSize];
@@ -373,7 +374,7 @@ try
 		int[] input = Array.ConvertAll(
 			array: HelperMethods.GetInput(day: 6).Split(','),
 			converter: x => int.Parse(x));
-		
+
 		answer += $"Part 1: {SimulateLanternFish(days: 80)} ";
 		answer += $"Part 2: {SimulateLanternFish(days: 256)}";
 
@@ -413,7 +414,7 @@ try
 			converter: x => int.Parse(x));
 
 		int lowestFuel = int.MaxValue;
-		for(int i = 0; i < input.Max(); i++)
+		for (int i = 0; i < input.Max(); i++)
 		{
 			int totalFuel = 0;
 			foreach (int j in input)
@@ -451,7 +452,172 @@ try
 	}
 	#endregion
 
+	void DayEight()
+	{
+		string anwser = "Day 8: ";
+		string[] input = HelperMethods.GetInput(day: 8).Split(Environment.NewLine);
 
+		int count = 0;
+		foreach (string s in input)
+		{
+			string[] signalOutput = s.Split('|')[1].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+			foreach (string signal in signalOutput)
+			{
+				if (signal.Length is 2 || signal.Length is 3 ||
+					signal.Length is 4 || signal.Length is 7)
+				{
+
+					count++;
+				}
+			}
+		}
+
+		anwser += $"Part 1: {count} ";
+
+		int total = 0;
+		foreach (string s in input)
+		{
+			string[] signalInput = s.Split('|')[0].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+			string[] signalOutput = s.Split('|')[1].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+			//  0000
+			// 1    2
+			// 1    2
+			//  3333
+			// 4    5
+			// 4    5
+			//  6666  = array layout
+			string[] signals = new string[10];
+			char[] decodedSignals = new char[7];
+
+			signals[1] = signalInput.First(s => s.Length is 2);
+			signals[4] = signalInput.First(s => s.Length is 4);
+			signals[7] = signalInput.First(s => s.Length is 3);
+			signals[8] = signalInput.First(s => s.Length is 7);
+
+			// Find [0] using 7-1
+			decodedSignals[0] = signals[7].Where(s => !signals[1].Contains(s)).First();
+
+			// Find [3] by comparing 4 against 0,6,9
+			string[] sixSignals = signalInput.Where(s => s.Length is 6).ToArray();
+			char[] unknownFourSides = signals[4].Where(s => !signals[1].Contains(s)).ToArray();
+			foreach (char c in unknownFourSides)
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					if (!sixSignals[i].Contains(c))
+					{
+						decodedSignals[3] = c;
+					}
+				}
+			}
+
+			// Find [1] using 4
+			decodedSignals[1] = unknownFourSides.Where(s => decodedSignals[3] != s).First();
+
+			// Find [6] using 4 + [0] against 9
+			string tmp = signals[4];
+			tmp += decodedSignals[0];
+			foreach (string signal in sixSignals)
+			{
+				bool flag = true;
+				foreach (char c in tmp)
+				{
+					if (!signal.Contains(c))
+					{
+						flag = false;
+					}
+				}
+				if (flag)
+				{
+					decodedSignals[6] = signal.Where(s => !tmp.Contains(s)).First();
+				}
+			}
+
+			// Find [4] using 9 - 8
+			tmp = signals[4];
+			tmp += decodedSignals[0];
+			tmp += decodedSignals[6];
+			decodedSignals[4] = signals[8].Where(s => !tmp.Contains(s)).First();
+
+			// Find [2] using 8 - 6
+			tmp = null;
+			tmp += decodedSignals[0];
+			tmp += decodedSignals[1];
+			tmp += decodedSignals[3];
+			tmp += decodedSignals[4];
+			tmp += decodedSignals[6];
+
+			foreach (string signal in sixSignals)
+			{
+				bool flag = true;
+				foreach (char c in tmp)
+				{
+					if (!signal.Contains(c))
+					{
+						flag = false;
+					}
+				}
+				if (flag)
+				{
+					tmp = signal;
+				}
+			}
+
+			decodedSignals[2] = signals[8].Where(s => !tmp.Contains(s)).First();
+
+			// Find [5]
+			tmp = null;
+			tmp += decodedSignals[0];
+			tmp += decodedSignals[1];
+			tmp += decodedSignals[2];
+			tmp += decodedSignals[3];
+			tmp += decodedSignals[4];
+			tmp += decodedSignals[6];
+			decodedSignals[5] = signals[8].Where(s => !tmp.Contains(s)).First();
+
+			Dictionary<char, char> remapping = new()
+			{
+				{ decodedSignals[0], 'a' },
+				{ decodedSignals[1], 'b' },
+				{ decodedSignals[2], 'c' },
+				{ decodedSignals[3], 'd' },
+				{ decodedSignals[4], 'e' },
+				{ decodedSignals[5], 'f' },
+				{ decodedSignals[6], 'g' },
+			};
+
+			string output = null;
+			foreach (string signal in signalOutput)
+			{
+				string remappedSignal = null;
+				foreach (char c in signal)
+				{
+					remapping.TryGetValue(c, out char a);
+					remappedSignal += a;
+				}
+
+				remappedSignal = new string(remappedSignal.OrderBy(s => s).ToArray());
+				
+				output += (remappedSignal) switch
+				{
+					"abcefg"  => '0',
+					"cf"      => '1',
+					"acdeg"   => '2',
+					"acdfg"   => '3',
+					"bcdf"    => '4',
+					"abdfg"   => '5',
+					"abdefg"  => '6',
+					"acf"     => '7',
+					"abcdefg" => '8',
+					_ => '9',
+				};
+			}
+			total += int.Parse(output);
+		}
+		anwser += $"Part 2: {total}";
+	}
 }
 finally
 {
