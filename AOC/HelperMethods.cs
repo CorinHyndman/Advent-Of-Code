@@ -27,5 +27,15 @@ namespace AOC
 				return reader.ReadToEnd();
 			}
 		}
+		public static bool TryGetElementAt<T>(this T[] array, int index, out T result)
+		{
+			if (-1 < index && index < array.Length)
+			{
+				result = array[index];
+				return true;
+			}
+			result = default;
+			return false;
+		}
 	}
 }

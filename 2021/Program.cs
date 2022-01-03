@@ -16,7 +16,8 @@ try
 	//DayFive();
 	//DaySix();
 	//DaySeven();
-	DayEight();
+	//DayEight();
+	DayNine();
 
 	Console.ReadLine();
 
@@ -452,6 +453,7 @@ try
 	}
 	#endregion
 
+	#region Week 2
 	void DayEight()
 	{
 		string anwser = "Day 8: ";
@@ -618,6 +620,103 @@ try
 		}
 		anwser += $"Part 2: {total}";
 	}
+	void DayNine()
+	{
+		string anwser = "Day 9: ";
+		string input = HelperMethods.GetInput(day: 9);
+		char[] inputArray = input.Replace(Environment.NewLine, null).ToCharArray();
+		int inputWidth = input.Split(Environment.NewLine)[0].Length;
+
+		int totalLowPoints = 0;
+		for (int i = 0; i < inputArray.Length; i++)
+		{
+			int height = (int)inputArray[i] - 48;
+			int leftOffset = i % inputWidth is 0 ? int.MaxValue : 1;
+			int rightOffset = i % inputWidth == inputWidth - 1 ? int.MaxValue : 1;
+			if ((inputArray.TryGetElementAt(i + rightOffset, out char a) && height >= (int)a - 48) ||
+				(inputArray.TryGetElementAt(i - leftOffset, out char b) && height >= (int)b - 48) ||
+				(inputArray.TryGetElementAt(i + inputWidth, out char c) && height >= (int)c - 48) ||
+				(inputArray.TryGetElementAt(i - inputWidth, out char d) && height >= (int)d - 48))
+			{
+				continue;
+			}
+			totalLowPoints += 1 + height;
+		}
+
+		anwser += $"Part 1: {totalLowPoints} ";
+
+		List<int> basinSizes = new();
+		List<int> visitedPositions = new();
+		for (int i = 0; i < inputArray.Length; i++)
+		{
+			int height = (int)inputArray[i] - 48;
+			int leftOffset = i % inputWidth is 0 ? int.MaxValue : 1;
+			int rightOffset = i % inputWidth == inputWidth - 1 ? int.MaxValue : 1;
+			if ((inputArray.TryGetElementAt(i + rightOffset, out char a) && height >= (int)a - 48) ||
+				(inputArray.TryGetElementAt(i - leftOffset, out char b) && height >= (int)b - 48) ||
+				(inputArray.TryGetElementAt(i + inputWidth, out char c) && height >= (int)c - 48) ||
+				(inputArray.TryGetElementAt(i - inputWidth, out char d) && height >= (int)d - 48))
+			{
+				continue;
+			}
+			basinSizes.Add(CheckBasinSize(position: i, height));
+		}
+
+		int total = 1;
+		basinSizes = basinSizes.OrderByDescending(x => x).ToList();
+		for (int i = 0; i < 3; i++)
+		{
+			total *= basinSizes[i];
+		}
+
+		anwser += $"Part 2: {total}";
+
+		int CheckBasinSize(int position, int height)
+		{
+			int basinCount = 0;
+
+			if (!visitedPositions.Contains(position))
+			{
+				basinCount = 1;
+				visitedPositions.Add(position);
+			}
+
+			if (inputArray[position] is '9')
+			{
+				return 0;
+			}
+
+			int leftOffset = position % inputWidth is 0 ? int.MaxValue : 1;
+			int rightOffset = position % inputWidth == inputWidth - 1 ? int.MaxValue : 1;
+			if (inputArray.TryGetElementAt(position + rightOffset, out char a) && height < (int)a - 48)
+			{
+				basinCount += CheckBasinSize(position + rightOffset, (int)a - 48);
+			}
+			if (inputArray.TryGetElementAt(position - leftOffset, out char b) && height < (int)b - 48)
+			{
+				basinCount += CheckBasinSize(position - leftOffset, (int)b - 48);
+			}
+			if (inputArray.TryGetElementAt(position + inputWidth, out char c) && height < (int)c - 48)
+			{
+				basinCount += CheckBasinSize(position + inputWidth, (int)c - 48);
+			}
+			if (inputArray.TryGetElementAt(position - inputWidth, out char d) && height < (int)d - 48)
+			{
+				basinCount += CheckBasinSize(position - inputWidth, (int)d - 48);
+			}
+			return basinCount;
+		}
+	}
+	void DayTen()
+	{
+		string anwser = "Day 10: ";
+		string[] input = HelperMethods.GetInput(day: 10).Split(Environment.NewLine);
+
+		foreach (string s in input)
+		{
+		}
+	}
+	#endregion
 }
 finally
 {
