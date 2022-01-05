@@ -17,12 +17,12 @@ try
 	//DaySix();
 	//DaySeven();
 	//DayEight();
-	DayNine();
+	DayEleven();
 
 	Console.ReadLine();
 
 	#region Week 1
-	void DayOne()
+	string DayOne()
 	{
 		string anwser = "Day 1: ";
 		int[] input = Array.ConvertAll(
@@ -55,8 +55,9 @@ try
 		}
 
 		anwser += $"Part 2: {count}";
+		return anwser;
 	}
-	void DayTwo()
+	string DayTwo()
 	{
 		string answer = "Day 2: ";
 		string[] tmp = HelperMethods.GetInput(day: 2).Split(Environment.NewLine);
@@ -73,7 +74,6 @@ try
 				case "up": horizontal -= Value; break;
 				case "down": horizontal += Value; break;
 				case "forward": depth += Value; break;
-				default: Console.WriteLine("Invalid Input Detected"); return;
 			}
 		}
 
@@ -90,14 +90,13 @@ try
 					horizontal += Value;
 					depth += aim * Value;
 					break;
-
-				default: Console.WriteLine("Invalid Input Detected"); return;
 			}
 		}
 
 		answer += $"Part 2: {horizontal * depth}";
+		return answer;
 	}
-	void DayThree()
+	string DayThree()
 	{
 		string answer = "Day 3: ";
 		string[] input = HelperMethods.GetInput(day: 3).Split(Environment.NewLine);
@@ -123,16 +122,13 @@ try
 				: '0';
 		}
 
-		answer += $"Part 1: {Convert.ToInt32(gammaRate, fromBase: 2) * Convert.ToInt32(epsilonRate, fromBase: 2)} ";
+		
+		string scrubRating = NarrowDown(input, condition: (x) => x < 0, searchFor: '0', startPos: 0);
+		string oxygenGenRating = NarrowDown(input, condition: (x) => x >= 0, searchFor: '1', startPos: 0);
 
-		string scrubRating = null;
-		string oxygenGenRating = null;
-
-		scrubRating = NarrowDown(input, condition: (x) => x < 0, searchFor: '0', startPos: 0);
-		oxygenGenRating = NarrowDown(input, condition: (x) => x >= 0, searchFor: '1', startPos: 0);
-
-		answer += $"Part 2: {Convert.ToInt32(scrubRating, fromBase: 2) * Convert.ToInt32(oxygenGenRating, fromBase: 2)}";
-		Console.WriteLine(answer);
+		answer = $"Part 1: {Convert.ToInt32(gammaRate, fromBase: 2) * Convert.ToInt32(epsilonRate, fromBase: 2)} " +
+				 $"Part 2: {Convert.ToInt32(scrubRating, fromBase: 2) * Convert.ToInt32(oxygenGenRating, fromBase: 2)}";
+		return answer;
 
 		string NarrowDown(string[] array, Func<int, bool> condition, char searchFor, int startPos)
 		{
@@ -155,7 +151,7 @@ try
 			return NarrowDown(narrowedArray, condition, searchFor, startPos + 1);
 		}
 	}
-	void DayFour()
+	string DayFour()
 	{
 		string answer = "Day 4: ";
 		string[] input = HelperMethods.GetInput(day: 4).Split(Environment.NewLine + Environment.NewLine);
@@ -200,6 +196,7 @@ try
 		}
 
 		answer += $"Part 2: {winOrder.Last().bingoNumber * winOrder.Last().total}";
+		return answer;
 
 		int[,] FormatBoard(string[] board)
 		{
@@ -274,7 +271,7 @@ try
 			return total;
 		}
 	}
-	void DayFive()
+	string DayFive()
 	{
 		string answer = "Day 5: ";
 		string[] input = HelperMethods.GetInput(day: 5).Split(Environment.NewLine);
@@ -352,6 +349,7 @@ try
 		}
 
 		answer += $"Part 2: {CalculateOverlappingPipeCount()}";
+		return answer;
 
 		int CalculateOverlappingPipeCount()
 		{
@@ -369,15 +367,15 @@ try
 			return overlappingPipeCount;
 		}
 	}
-	void DaySix()
+	string DaySix()
 	{
 		string answer = "Day 6: ";
 		int[] input = Array.ConvertAll(
 			array: HelperMethods.GetInput(day: 6).Split(','),
 			converter: x => int.Parse(x));
 
-		answer += $"Part 1: {SimulateLanternFish(days: 80)} ";
-		answer += $"Part 2: {SimulateLanternFish(days: 256)}";
+		answer = $"Part 1: {SimulateLanternFish(days: 80)} Part 2: {SimulateLanternFish(days: 256)}";
+		return answer;
 
 		long SimulateLanternFish(int days)
 		{
@@ -407,7 +405,7 @@ try
 			return total;
 		}
 	}
-	void DaySeven()
+	string DaySeven()
 	{
 		string answer = "Day 7: ";
 		int[] input = Array.ConvertAll(
@@ -450,11 +448,12 @@ try
 		}
 
 		answer += $"Part 2: {lowestFuel} ";
+		return answer;
 	}
 	#endregion
 
 	#region Week 2
-	void DayEight()
+	string DayEight()
 	{
 		string anwser = "Day 8: ";
 		string[] input = HelperMethods.GetInput(day: 8).Split(Environment.NewLine);
@@ -619,8 +618,9 @@ try
 			total += int.Parse(output);
 		}
 		anwser += $"Part 2: {total}";
+		return anwser;
 	}
-	void DayNine()
+	string DayNine()
 	{
 		string anwser = "Day 9: ";
 		string input = HelperMethods.GetInput(day: 9);
@@ -670,6 +670,7 @@ try
 		}
 
 		anwser += $"Part 2: {total}";
+		return anwser;
 
 		int CheckBasinSize(int position, int height)
 		{
@@ -714,6 +715,104 @@ try
 
 		foreach (string s in input)
 		{
+		}
+	}
+	string DayEleven()
+	{
+		string anwser = "Day 11: ";
+		string[] inputArray = HelperMethods.GetInput(day: 11).Split(Environment.NewLine);
+
+		int width = inputArray[0].Length;
+		int height = inputArray.Length;
+
+		int[,] input = ParseRawInput(inputArray);
+
+		int stepCount = 100;
+		int totalFlashes = 0;
+		List<(int, int)> poppedOctos = new();
+		for (int s = 0; s < stepCount; s++)
+		{
+			poppedOctos.Clear();
+			for (int i = 0; i < height; i++)
+			{
+				for (int j = 0; j < width; j++)
+				{
+					input[i, j]++;
+				}
+			}
+			bool containsPops = true;
+			while (containsPops)
+			{
+				containsPops = input.ForeachElementThatMeetsCriteria(
+					criteria: x => x.value > 9 && !poppedOctos.Contains(x.position),
+					action: (a, b) => Pop(a, b));
+			}
+			foreach ((int i, int j) in poppedOctos)
+			{
+				input[i, j] = 0;
+				totalFlashes++;
+			}
+		}
+
+		anwser += $"Part 1: {totalFlashes} ";
+
+		input = ParseRawInput(inputArray);
+		for (int s = 0; s < int.MaxValue; s++)
+		{
+			poppedOctos.Clear();
+			for (int i = 0; i < height; i++)
+			{
+				for (int j = 0; j < width; j++)
+				{
+					input[i, j]++;
+				}
+			}
+			bool containsPops = true;
+			while (containsPops)
+			{
+				containsPops = input.ForeachElementThatMeetsCriteria(
+					criteria: x => x.value > 9 && !poppedOctos.Contains(x.position),
+					action: (a, b) => Pop(a, b));
+			}
+			foreach ((int i, int j) in poppedOctos)
+			{
+				input[i, j] = 0;
+				totalFlashes++;
+			}
+
+			if (poppedOctos.Count == width * height)
+			{
+				anwser += $"Part 2: {++s}";
+				return anwser;
+			}
+		}
+		return anwser + "Part 2: N/A";
+
+		void Pop(int a, int b)
+		{
+			poppedOctos.Add((a, b));
+			if (input.TryGetElementAt(a + 1, b, out _)) input[a + 1, b]++;
+			if (input.TryGetElementAt(a - 1, b, out _)) input[a - 1, b]++;
+			if (input.TryGetElementAt(a, b + 1, out _)) input[a, b + 1]++;
+			if (input.TryGetElementAt(a, b - 1, out _)) input[a, b - 1]++;
+			if (input.TryGetElementAt(a + 1, b - 1, out _)) input[a + 1, b - 1]++;
+			if (input.TryGetElementAt(a - 1, b + 1, out _)) input[a - 1, b + 1]++;
+			if (input.TryGetElementAt(a + 1, b + 1, out _)) input[a + 1, b + 1]++;
+			if (input.TryGetElementAt(a - 1, b - 1, out _)) input[a - 1, b - 1]++;
+		}
+		int[,] ParseRawInput(string[] rawInput)
+		{
+			int position = 0;
+			int[,] input = new int[height, width];
+			for (int i = 0; i < height; i++)
+			{
+				for (int j = 0; j < width; j++)
+				{
+					input[position, j] = (int)char.GetNumericValue(inputArray[i][j]);
+				}
+				position++;
+			}
+			return input;
 		}
 	}
 	#endregion
