@@ -10,19 +10,20 @@ try
 	HelperMethods.ExectuingAssembly = Assembly.GetExecutingAssembly();
 
 	string answers =
-		Day01() + Environment.NewLine +
-		Day02() + Environment.NewLine +
-		Day03() + Environment.NewLine +
-		Day04() + Environment.NewLine +
-		Day05() + Environment.NewLine +
-		Day06() + Environment.NewLine +
-		Day07() + Environment.NewLine +
-		Day08() + Environment.NewLine +
-		Day09() + Environment.NewLine +
-		Day10() + Environment.NewLine +
-		Day11() + Environment.NewLine;
+		//Day01() + Environment.NewLine +
+		//Day02() + Environment.NewLine +
+		//Day03() + Environment.NewLine +
+		//Day04() + Environment.NewLine +
+		//Day05() + Environment.NewLine +
+		//Day06() + Environment.NewLine +
+		//Day07() + Environment.NewLine +
+		//Day08() + Environment.NewLine +
+		//Day09() + Environment.NewLine +
+		//Day10() + Environment.NewLine +
+		//Day11() + Environment.NewLine +
+		Day12() + Environment.NewLine;
 
-    Console.WriteLine(answers);
+	Console.WriteLine(answers);
 
 	Console.ReadLine();
 
@@ -887,6 +888,11 @@ try
 			}
 			return input;
 		}
+	}
+	string Day12()
+    {
+		string answer = "Day 12: ";
+		string[] inputArray = HelperMethods.GetInput(day: 12).Split(Environment.NewLine);
 	}
 	#endregion
 }
