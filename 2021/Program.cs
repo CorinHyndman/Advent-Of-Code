@@ -9,22 +9,27 @@ try
 	HelperMethods.Year = 2021;
 	HelperMethods.ExectuingAssembly = Assembly.GetExecutingAssembly();
 
-	//DayOne();
-	//DayTwo();
-	//DayThree();
-	//DayFour();
-	//DayFive();
-	//DaySix();
-	//DaySeven();
-	//DayEight();
-	DayEleven();
+	string answers =
+		Day01() + Environment.NewLine +
+		Day02() + Environment.NewLine +
+		Day03() + Environment.NewLine +
+		Day04() + Environment.NewLine +
+		Day05() + Environment.NewLine +
+		Day06() + Environment.NewLine +
+		Day07() + Environment.NewLine +
+		Day08() + Environment.NewLine +
+		Day09() + Environment.NewLine +
+		Day10() + Environment.NewLine +
+		Day11() + Environment.NewLine;
+
+    Console.WriteLine(answers);
 
 	Console.ReadLine();
 
 	#region Week 1
-	string DayOne()
+	string Day01()
 	{
-		string anwser = "Day 1: ";
+		string answer = "Day  1: ";
 		int[] input = Array.ConvertAll(
 			array: HelperMethods.GetInput(day: 1).Split(Environment.NewLine),
 			converter: x => int.Parse(x));
@@ -38,7 +43,7 @@ try
 			}
 		}
 
-		anwser += $"Part 1: {count} ";
+		answer += $"Part 1: {count} ";
 
 		count = 0;
 		int A = input[0] + input[1] + input[2];
@@ -54,12 +59,12 @@ try
 			A = B;
 		}
 
-		anwser += $"Part 2: {count}";
-		return anwser;
+		answer += $"Part 2: {count}";
+		return answer;
 	}
-	string DayTwo()
+	string Day02()
 	{
-		string answer = "Day 2: ";
+		string answer = "Day  2: ";
 		string[] tmp = HelperMethods.GetInput(day: 2).Split(Environment.NewLine);
 		(string, int)[] input = Enumerable.Range(0, tmp.Length)
 			.Select(i => (tmp[i].Split(' ')[0], int.Parse(tmp[i].Split(' ')[1])))
@@ -96,9 +101,9 @@ try
 		answer += $"Part 2: {horizontal * depth}";
 		return answer;
 	}
-	string DayThree()
+	string Day03()
 	{
-		string answer = "Day 3: ";
+		string answer = "Day  3: ";
 		string[] input = HelperMethods.GetInput(day: 3).Split(Environment.NewLine);
 
 		int bitCount = 0;
@@ -109,25 +114,19 @@ try
 			bitCount = 0;
 			for (int j = 0; j < input.Length; j++)
 			{
-				bitCount += input[j][i] is '1'
-					? 1
-					: -1;
+				bitCount += input[j][i] is '1' ? 1 : -1;
 			}
 
-			gammaRate += (bitCount > 0)
-				? '1'
-				: '0';
-			epsilonRate += (bitCount < 0)
-				? '1'
-				: '0';
+			gammaRate += (bitCount > 0) ? '1' : '0';
+			epsilonRate += (bitCount < 0) ? '1' : '0';
 		}
 
 		
 		string scrubRating = NarrowDown(input, condition: (x) => x < 0, searchFor: '0', startPos: 0);
 		string oxygenGenRating = NarrowDown(input, condition: (x) => x >= 0, searchFor: '1', startPos: 0);
 
-		answer = $"Part 1: {Convert.ToInt32(gammaRate, fromBase: 2) * Convert.ToInt32(epsilonRate, fromBase: 2)} " +
-				 $"Part 2: {Convert.ToInt32(scrubRating, fromBase: 2) * Convert.ToInt32(oxygenGenRating, fromBase: 2)}";
+		answer += $"Part 1: {Convert.ToInt32(gammaRate, fromBase: 2) * Convert.ToInt32(epsilonRate, fromBase: 2)} " +
+				  $"Part 2: {Convert.ToInt32(scrubRating, fromBase: 2) * Convert.ToInt32(oxygenGenRating, fromBase: 2)}";
 		return answer;
 
 		string NarrowDown(string[] array, Func<int, bool> condition, char searchFor, int startPos)
@@ -140,9 +139,7 @@ try
 			bitCount = 0;
 			for (int j = 0; j < array.Length; j++)
 			{
-				bitCount += (array[j][startPos] is '1')
-					? 1
-					: -1;
+				bitCount += (array[j][startPos] is '1') ? 1 : -1;
 			}
 
 			searchFor = condition(bitCount) ? '1' : '0';
@@ -151,9 +148,9 @@ try
 			return NarrowDown(narrowedArray, condition, searchFor, startPos + 1);
 		}
 	}
-	string DayFour()
+	string Day04()
 	{
-		string answer = "Day 4: ";
+		string answer = "Day  4: ";
 		string[] input = HelperMethods.GetInput(day: 4).Split(Environment.NewLine + Environment.NewLine);
 
 		bool bingo = false;
@@ -271,9 +268,9 @@ try
 			return total;
 		}
 	}
-	string DayFive()
+	string Day05()
 	{
-		string answer = "Day 5: ";
+		string answer = "Day  5: ";
 		string[] input = HelperMethods.GetInput(day: 5).Split(Environment.NewLine);
 
 		const int BoardSize = 1000;
@@ -367,14 +364,14 @@ try
 			return overlappingPipeCount;
 		}
 	}
-	string DaySix()
+	string Day06()
 	{
-		string answer = "Day 6: ";
+		string answer = "Day  6: ";
 		int[] input = Array.ConvertAll(
 			array: HelperMethods.GetInput(day: 6).Split(','),
 			converter: x => int.Parse(x));
 
-		answer = $"Part 1: {SimulateLanternFish(days: 80)} Part 2: {SimulateLanternFish(days: 256)}";
+		answer += $"Part 1: {SimulateLanternFish(days: 80)} Part 2: {SimulateLanternFish(days: 256)}";
 		return answer;
 
 		long SimulateLanternFish(int days)
@@ -405,9 +402,9 @@ try
 			return total;
 		}
 	}
-	string DaySeven()
+	string Day07()
 	{
-		string answer = "Day 7: ";
+		string answer = "Day  7: ";
 		int[] input = Array.ConvertAll(
 			array: HelperMethods.GetInput(day: 7).Split(','),
 			converter: x => int.Parse(x));
@@ -453,9 +450,9 @@ try
 	#endregion
 
 	#region Week 2
-	string DayEight()
+	string Day08()
 	{
-		string anwser = "Day 8: ";
+		string answer = "Day  8: ";
 		string[] input = HelperMethods.GetInput(day: 8).Split(Environment.NewLine);
 
 		int count = 0;
@@ -474,7 +471,7 @@ try
 			}
 		}
 
-		anwser += $"Part 1: {count} ";
+		answer += $"Part 1: {count} ";
 
 		int total = 0;
 		foreach (string s in input)
@@ -617,12 +614,12 @@ try
 			}
 			total += int.Parse(output);
 		}
-		anwser += $"Part 2: {total}";
-		return anwser;
+		answer += $"Part 2: {total}";
+		return answer;
 	}
-	string DayNine()
+	string Day09()
 	{
-		string anwser = "Day 9: ";
+		string answer = "Day  9: ";
 		string input = HelperMethods.GetInput(day: 9);
 		char[] inputArray = input.Replace(Environment.NewLine, null).ToCharArray();
 		int inputWidth = input.Split(Environment.NewLine)[0].Length;
@@ -643,7 +640,7 @@ try
 			totalLowPoints += 1 + height;
 		}
 
-		anwser += $"Part 1: {totalLowPoints} ";
+		answer += $"Part 1: {totalLowPoints} ";
 
 		List<int> basinSizes = new();
 		List<int> visitedPositions = new();
@@ -669,8 +666,8 @@ try
 			total *= basinSizes[i];
 		}
 
-		anwser += $"Part 2: {total}";
-		return anwser;
+		answer += $"Part 2: {total}";
+		return answer;
 
 		int CheckBasinSize(int position, int height)
 		{
@@ -708,18 +705,94 @@ try
 			return basinCount;
 		}
 	}
-	void DayTen()
+	string Day10()
 	{
-		string anwser = "Day 10: ";
+		string answer = "Day 10: ";
 		string[] input = HelperMethods.GetInput(day: 10).Split(Environment.NewLine);
 
-		foreach (string s in input)
+		string openings = "([{<";
+		string closings = ")]}>";
+
+		int index = 0;
+		long points = 0;
+		Stack<char> openingChunks = new();
+		foreach (string chunk in input)
 		{
+            foreach (char c in chunk)
+            {
+                if (openings.Contains(c))
+                {
+					openingChunks.Push(c);
+                }
+                else
+                {
+					index = openings.IndexOf(openingChunks.Pop());
+                    if (closings[index] != c)
+                    {
+						points += c switch
+						{
+							')' => 3,
+							']' => 57,
+							'}' => 1197,
+							'>' => 25137,
+							_ => throw new Exception("Invalid character found in input"),
+						};
+						break;
+                    }
+                }
+            }
+			openingChunks.Clear();
 		}
+		answer += $"Part 1: {points} ";
+				
+		List<long> totalPoints = new();
+		foreach (string chunk in input)
+		{
+			for (int i = 0; i < chunk.Length; i++)
+			{
+				if (openings.Contains(chunk[i]))
+				{
+					openingChunks.Push(chunk[i]);
+				}
+				else
+				{
+					index = openings.IndexOf(openingChunks.Pop());
+					if (closings[index] != chunk[i])
+					{
+						openingChunks.Clear();
+						break;
+					}
+				}
+			}
+
+			points = 0;
+            while (openingChunks.Count > 0)
+			{			
+				index = openings.IndexOf(openingChunks.Pop());
+
+				points *= 5;
+				points += closings[index] switch
+                {
+                    ')' => 1,
+                    ']' => 2,
+                    '}' => 3,
+                    '>' => 4,
+                    _ => throw new Exception("Invalid character found in input"),
+                };
+			}
+            if (points > 0)
+            {
+				totalPoints.Add(points);
+            }
+		}
+		totalPoints.Sort();
+		answer += $"Part 2: {totalPoints[totalPoints.Count / 2]}";
+
+		return answer;
 	}
-	string DayEleven()
+	string Day11()
 	{
-		string anwser = "Day 11: ";
+		string answer = "Day 11: ";
 		string[] inputArray = HelperMethods.GetInput(day: 11).Split(Environment.NewLine);
 
 		int width = inputArray[0].Length;
@@ -754,7 +827,7 @@ try
 			}
 		}
 
-		anwser += $"Part 1: {totalFlashes} ";
+		answer += $"Part 1: {totalFlashes} ";
 
 		input = ParseRawInput(inputArray);
 		for (int s = 0; s < int.MaxValue; s++)
@@ -782,11 +855,11 @@ try
 
 			if (poppedOctos.Count == width * height)
 			{
-				anwser += $"Part 2: {++s}";
-				return anwser;
+				answer += $"Part 2: {++s}";
+				return answer;
 			}
 		}
-		return anwser + "Part 2: N/A";
+		return answer + "Part 2: N/A";
 
 		void Pop(int a, int b)
 		{

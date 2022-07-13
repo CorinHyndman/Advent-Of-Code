@@ -43,7 +43,6 @@ namespace AOC
 			return false;
 		}
 
-		/// <summary>Returns a bool indicating whether the element has been successfully accessed</summary>
 		public static bool TryGetElementAt<T>(this T[] array, int index, out T result)
 		{
 			if (-1 < index && index < array.Length)
@@ -54,7 +53,7 @@ namespace AOC
 			result = default;
 			return false;
 		}
-		/// <summary>Returns a bool indicating whether the element has been successfully accessed</summary>
+
 		public static bool TryGetElementAt<T>(this T[,] array, int Col, int Row, out T result)
 		{
 			if (-1 < Col && -1 < Row && Col < array.GetLength(0) && Row < array.GetLength(1))
@@ -65,7 +64,8 @@ namespace AOC
 			result = default;
 			return false;
 		}
-#if DEBUG
+		
+		#if DEBUG
 		public static void Draw<T>(T[] array, string prefix = null, string suffix = null)
 		{
 			Console.WriteLine(prefix);
@@ -92,13 +92,12 @@ namespace AOC
 			}
 			Console.WriteLine(suffix);
 		}
-#endif
-#endregion
+		#endif
+		#endregion
 
-#region DaySpecific
+		#region DaySpecific
 		public static bool ForeachElementThatMeetsCriteria<T>(this T[,] array, Func<(T value, (int, int) position), bool> criteria, Action<int, int> action)
 		{
-			//Day 11
 			bool flag = false;
 			for (int i = 0; i < array.GetLength(0); i++)
 			{
@@ -113,6 +112,6 @@ namespace AOC
 			}
 			return flag;
 		}
-#endregion
+		#endregion
 	}
 }
